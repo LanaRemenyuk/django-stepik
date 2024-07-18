@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    {% for post in posts %}
+        <img src={{ post.thumbnail.url }} alt={{ post.title }} width="150"/>
+        <strong>{{ post.title }}</strong>
+        <p>{{ post.description }}</p>
+        <small>{{ post.create }}</small>
+        <hr>
+        <span>{{ post.category.title }}</span>
+        <br>
+    {% endfor %}
+{% endblock %}

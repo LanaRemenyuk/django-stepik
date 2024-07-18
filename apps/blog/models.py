@@ -44,7 +44,7 @@ class Post(models.Model):
     text = models.TextField(verbose_name='Полный текст поста')
     thumbnail = models.ImageField(default='default.jpg',
                                   blank=True,
-                                  upload_to='images/thumbnails/',
+                                  upload_to='images/thumbnails/%Y/%m/%d/',
                                   validators=[FileExtensionValidator(allowed_extensions=('png','jpg','webp','jpeg', 'gif'))]
                                   )
     status = models.CharField(choices=STATUS_OPTIONS, default='published', max_length=10, verbose_name='Статус записи')
