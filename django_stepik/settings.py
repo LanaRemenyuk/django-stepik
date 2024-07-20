@@ -1,4 +1,8 @@
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -8,15 +12,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!^b6r@i0k3c6)mkh6kkf=x%o+@q#wuz2)sf4ymybh%2@^$q-2_'
+SECRET_KEY = os.getenv(
+    'SECRET_KEY', default='secretkey')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -28,6 +38,12 @@ INSTALLED_APPS = [
     'apps.blog.apps.BlogConfig',
     'mptt',
     'django_mptt_admin',
+    'debug_toolbar',
+    'apps.accounts',
+    'taggit',
+    'django_recaptcha',
+    'ckeditor_uploader',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -38,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'apps.accounts.middleware.ActiveUserMiddleware',
 ]
 
 ROOT_URLCONF = 'django_stepik.urls'
@@ -107,12 +125,34 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = (BASE_DIR / 'static')
+STATIC_ROOT = BASE_DIR / 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'templates/js/']
+
 
 MEDIA_ROOT = (BASE_DIR / 'media')
 MEDIA_URL = '/media/'
+
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_CONFIGS = {
+    'awesome_ckeditor': {
+        'toolbar': 'full',
+        'height': 300,
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': (BASE_DIR / 'cache'),
+    }
+}
